@@ -76,7 +76,11 @@ void sendKnife()
   co.primitive_poses[0].orientation.w = 1.0;
 
   pub_aco.publish(aco);
+#ifdef WIN32
+  Sleep(1000);
+#else
   sleep(1);
+#endif
   pub_aco.publish(aco);
   ROS_INFO("Object published.");
   ros::Duration(1.5).sleep();

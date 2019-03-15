@@ -135,8 +135,11 @@ int main(int argc, char** argv)
       psm.getPlanningScene()->getPlanningSceneMsg(psmsg);
       pub_scene.publish(psmsg);
       std::cout << psm.getPlanningScene()->getCurrentState() << std::endl;
-
+#ifdef WIN32
+      Sleep(1000);
+#else
       sleep(1);
+#endif
     }
   } while (nh.ok());
 

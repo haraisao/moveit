@@ -54,12 +54,24 @@
 #include <memory>
 #include <tf2_ros/buffer.h>
 
+#include <ros/macros.h>
+
+#ifdef ROS_BUILD_SHARED_LIBS  // ros is being built around shared libraries
+  #ifdef moveit_move_group_interface_EXPORTS  // we are building a shared lib/dll
+    #define MOVE_GROUP_INTERFACE_DECL ROS_HELPER_EXPORT
+  #else  // we are using shared lib/dll
+    #define MOVE_GROUP_INTERFACE_DECL ROS_HELPER_IMPORT
+  #endif
+#else  // ros is being built around static libraries
+  #define MOVE_GROUP_INTERFACE_DECL
+#endif
+
 namespace moveit
 {
 /** \brief Simple interface to MoveIt! components */
 namespace planning_interface
 {
-class MoveItErrorCode : public moveit_msgs::MoveItErrorCodes
+class MOVE_GROUP_INTERFACE_DECL MoveItErrorCode : public moveit_msgs::MoveItErrorCodes
 {
 public:
   MoveItErrorCode()

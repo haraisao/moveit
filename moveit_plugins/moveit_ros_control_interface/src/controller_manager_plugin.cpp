@@ -53,6 +53,10 @@
 #include <map>
 #include <memory>
 
+#ifdef WIN32
+#undef STRICT
+#endif
+
 namespace moveit_ros_control_interface
 {
 /**
@@ -383,7 +387,11 @@ public:
 #endif
       }
     }
+#ifdef WIN32
+    srv.request.strictness = (int)srv.request.STRICT;
+#else
     srv.request.strictness = srv.request.STRICT;
+#endif
 
     if (!srv.request.start_controllers.empty() || srv.request.stop_controllers.empty())
     {  // something to switch?

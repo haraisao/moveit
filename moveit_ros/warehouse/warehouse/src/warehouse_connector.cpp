@@ -36,9 +36,47 @@
 
 #include <sys/types.h>
 #include <signal.h>
+#ifndef WIN32
 #include <unistd.h>
+#endif
 #include <ros/ros.h>
 #include <moveit/warehouse/warehouse_connector.h>
+
+#ifdef WIN32
+#include <windows.h>
+#include <process.h>
+#include <iostream>
+
+void kill(int pid, int sig)
+{
+  DWORD dwThreadID = pid;
+  HANDLE hThread = OpenThread(THREAD_ALL_ACCESS, TRUE, dwThreadID);
+  if (hThread){
+    TerminateThread(hThread, (DWORD)sig);
+    CloseHandle(hThread);
+  }
+}
+
+int fork()
+{
+  int pid = -1;
+  /*
+    DWORD dwThreadID;
+    HANDLE hthread = CreateThread(NULL, 0, ThreadFunc, NULL, 0, dwThreadID);
+    pid = dwThreadID;
+  */
+  std::cerr << "==== call fork, but unsupported on Windows" << std::endl;
+  return pid;
+}
+
+int execv(const char *cmd, char **argv)
+{
+  int code;
+  std::cerr << "==== call execv: " << cmd << std::endl;
+  code = (int)_execv(cmd, argv);
+  return code;
+}
+#endif
 
 namespace moveit_warehouse
 {

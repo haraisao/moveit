@@ -29,15 +29,32 @@ target_link_libraries(moveit_init_demo_warehouse ${catkin_LIBRARIES} ${MOVEIT_LI
 add_executable(moveit_warehouse_services src/warehouse_services.cpp)
 target_link_libraries(moveit_warehouse_services ${catkin_LIBRARIES} ${MOVEIT_LIB_NAME} ${Boost_LIBRARIES})
 
-install(
-  TARGETS
-    ${MOVEIT_LIB_NAME}
-    moveit_save_to_warehouse
-    moveit_warehouse_broadcast
-    moveit_warehouse_import_from_text
-    moveit_warehouse_save_as_text
-    moveit_init_demo_warehouse
-    moveit_warehouse_services
-  LIBRARY DESTINATION ${CATKIN_GLOBAL_LIB_DESTINATION}
-  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+if(WIN32)
+  install(
+    TARGETS
+      ${MOVEIT_LIB_NAME}
+      moveit_save_to_warehouse
+      moveit_warehouse_broadcast
+      moveit_warehouse_import_from_text
+      moveit_warehouse_save_as_text
+      moveit_init_demo_warehouse
+      moveit_warehouse_services
+    ARCHIVE DESTINATION ${CATKIN_GLOBAL_LIB_DESTINATION}
+    LIBRARY DESTINATION ${CATKIN_GLOBAL_LIB_DESTINATION}
+    RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+    CONFIGURATIONS ${CMAKE_BUILD_TYPE}
+  )
+else()
+  install(
+    TARGETS
+      ${MOVEIT_LIB_NAME}
+      moveit_save_to_warehouse
+      moveit_warehouse_broadcast
+      moveit_warehouse_import_from_text
+      moveit_warehouse_save_as_text
+      moveit_init_demo_warehouse
+      moveit_warehouse_services
+    LIBRARY DESTINATION ${CATKIN_GLOBAL_LIB_DESTINATION}
+    RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+endif()
 install(DIRECTORY include/ DESTINATION ${CATKIN_GLOBAL_INCLUDE_DESTINATION})

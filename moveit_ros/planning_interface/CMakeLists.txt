@@ -30,7 +30,7 @@ find_package(PythonLibs "${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR}" REQUIR
 find_package(Boost REQUIRED)
 if(Boost_VERSION LESS 106700)
   set(BOOST_PYTHON_COMPONENT python)
-elseif()
+else()
   set(BOOST_PYTHON_COMPONENT python${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR})
 endif()
 
@@ -80,7 +80,9 @@ include_directories(${THIS_PACKAGE_INCLUDE_DIRS}
 include_directories(SYSTEM
                     ${EIGEN3_INCLUDE_DIRS}
                     ${PYTHON_INCLUDE_DIRS})
-
+if(WIN32)
+  link_directories( "$ENV{PYTHON_DIR}/libs")
+endif()
 add_subdirectory(py_bindings_tools)
 add_subdirectory(common_planning_interface_objects)
 add_subdirectory(planning_scene_interface)

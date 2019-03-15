@@ -42,12 +42,24 @@
 #include <moveit/robot_model/robot_model.h>
 #include <moveit/kinematics_base/kinematics_base.h>
 
+#include <ros/macros.h>
+
+#ifdef ROS_BUILD_SHARED_LIBS  // ros is being built around shared libraries
+  #ifdef moveit_kinematics_plugin_loader_EXPORTS  // we are building a shared lib/dll
+    #define KINEMATICS_PLUGIN_LOADER_DECL ROS_HELPER_EXPORT
+  #else  // we are using shared lib/dll
+    #define KINEMATICS_PLUGIN_LOADER_DECL ROS_HELPER_IMPORT
+  #endif
+#else  // ros is being built around static libraries
+  #define KINEMATICS_PLUGIN_LOADER_DECL
+#endif
+
 namespace kinematics_plugin_loader
 {
 MOVEIT_CLASS_FORWARD(KinematicsPluginLoader);
 
 /** \brief Helper class for loading kinematics solvers */
-class KinematicsPluginLoader
+class KINEMATICS_PLUGIN_LOADER_DECL KinematicsPluginLoader
 {
 public:
   /** \brief Load the kinematics solvers based on information on the

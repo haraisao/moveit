@@ -41,9 +41,21 @@
 #include <boost/thread.hpp>
 #include <deque>
 
+#include <ros/macros.h>
+
+#ifdef ROS_BUILD_SHARED_LIBS  // ros is being built around shared libraries
+  #ifdef moveit_lazy_free_space_updater_EXPORTS  // we are building a shared lib/dll
+    #define LAZY_FREE_SPACE_UPDATER_DECL ROS_HELPER_EXPORT
+  #else  // we are using shared lib/dll
+    #define LAZY_FREE_SPACE_UPDATER_DECL ROS_HELPER_IMPORT
+  #endif
+#else  // ros is being built around static libraries
+  #define LAZY_FREE_SPACE_UPDATER_DECL
+#endif
+
 namespace occupancy_map_monitor
 {
-class LazyFreeSpaceUpdater
+class LAZY_FREE_SPACE_UPDATER_DECL LazyFreeSpaceUpdater
 {
 public:
   LazyFreeSpaceUpdater(const OccMapTreePtr& tree, unsigned int max_batch_size = 10);

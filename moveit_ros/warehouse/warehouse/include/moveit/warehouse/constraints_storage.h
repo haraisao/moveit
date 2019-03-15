@@ -41,6 +41,18 @@
 #include <moveit/macros/class_forward.h>
 #include <moveit_msgs/Constraints.h>
 
+#include <ros/macros.h>
+
+#ifdef ROS_BUILD_SHARED_LIBS  // ros is being built around shared libraries
+  #ifdef moveit_warehouse_EXPORTS  // we are building a shared lib/dll
+    #define MOVEIT_WAREHOUSE_DECL ROS_HELPER_EXPORT
+  #else  // we are using shared lib/dll
+    #define MOVEIT_WAREHOUSE_DECL ROS_HELPER_IMPORT
+  #endif
+#else  // ros is being built around static libraries
+  #define MOVEIT_WAREHOUSE_DECL
+#endif
+
 namespace moveit_warehouse
 {
 typedef warehouse_ros::MessageWithMetadata<moveit_msgs::Constraints>::ConstPtr ConstraintsWithMetadata;
@@ -48,7 +60,7 @@ typedef warehouse_ros::MessageCollection<moveit_msgs::Constraints>::Ptr Constrai
 
 MOVEIT_CLASS_FORWARD(ConstraintsStorage);
 
-class ConstraintsStorage : public MoveItMessageStorage
+class MOVEIT_WAREHOUSE_DECL ConstraintsStorage : public MoveItMessageStorage
 {
 public:
   static const std::string DATABASE_NAME;

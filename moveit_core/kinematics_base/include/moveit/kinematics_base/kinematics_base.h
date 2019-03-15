@@ -46,6 +46,18 @@
 #include <boost/function.hpp>
 #include <string>
 
+#include <ros/macros.h>
+
+#ifdef ROS_BUILD_SHARED_LIBS  // ros is being built around shared libraries
+  #ifdef moveit_kinematics_base_EXPORTS  // we are building a shared lib/dll
+    #define KINEMATICS_BASE_DECL ROS_HELPER_EXPORT
+  #else  // we are using shared lib/dll
+    #define KINEMATICS_BASE_DECL ROS_HELPER_IMPORT
+  #endif
+#else  // ros is being built around static libraries
+  #define KINEMATICS_BASE_DECL
+#endif
+
 namespace moveit
 {
 namespace core
@@ -143,7 +155,7 @@ MOVEIT_CLASS_FORWARD(KinematicsBase);
  * @class KinematicsBase
  * @brief Provides an interface for kinematics solvers.
  */
-class KinematicsBase
+class KINEMATICS_BASE_DECL KinematicsBase
 {
 public:
   static const double DEFAULT_SEARCH_DISCRETIZATION; /* = 0.1 */

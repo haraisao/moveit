@@ -217,7 +217,15 @@ void ChompTrajectory::fillInMinJerk()
 
   // calculate the spline coefficients for each joint:
   // (these are for the special case of zero start and end vel and acc)
+  #ifdef WIN32
+  double **coeff;
+  coeff = new double*[num_joints_];
+  for(int i=0; i<num_joints_; i++){
+    coeff[i] = new double[6];
+  }
+#else
   double coeff[num_joints_][6];
+#endif
   for (int i = 0; i < num_joints_; i++)
   {
     double x0 = (*this)(start_index, i);
@@ -248,6 +256,14 @@ void ChompTrajectory::fillInMinJerk()
       }
     }
   }
+#ifdef WIN32
+  for(int i=0; i<num_joints_; i++){
+    delete[] coeff[i];
+    coeff[i]=0;
+  }
+  delete[] coeff;
+  coeff=0;
+#endif
 }
 
 bool ChompTrajectory::fillInFromTrajectory(moveit_msgs::MotionPlanDetailedResponse& res)

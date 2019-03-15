@@ -57,6 +57,18 @@
 #include <boost/concept_check.hpp>
 #include <memory>
 
+#include <ros/macros.h>
+
+#ifdef ROS_BUILD_SHARED_LIBS  // ros is being built around shared libraries
+  #ifdef moveit_planning_scene_EXPORTS  // we are building a shared lib/dll
+    #define PLANNING_SCENE_DECL ROS_HELPER_EXPORT
+  #else  // we are using shared lib/dll
+    #define PLANNING_SCENE_DECL ROS_HELPER_IMPORT
+  #endif
+#else  // ros is being built around static libraries
+  #define PLANNING_SCENE_DECL
+#endif
+
 /** \brief This namespace includes the central class for representing planning contexts */
 namespace planning_scene
 {
@@ -84,7 +96,7 @@ typedef std::map<std::string, object_recognition_msgs::ObjectType> ObjectTypeMap
 /** \brief This class maintains the representation of the
     environment as seen by a planning instance. The environment
     geometry, the robot geometry and state are maintained. */
-class PlanningScene : private boost::noncopyable, public std::enable_shared_from_this<PlanningScene>
+class PLANNING_SCENE_DECL PlanningScene : private boost::noncopyable, public std::enable_shared_from_this<PlanningScene>
 {
 public:
   /** \brief construct using an existing RobotModel */

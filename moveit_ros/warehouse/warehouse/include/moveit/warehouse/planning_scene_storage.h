@@ -43,6 +43,18 @@
 #include <moveit_msgs/MotionPlanRequest.h>
 #include <moveit_msgs/RobotTrajectory.h>
 
+#include <ros/macros.h>
+
+#ifdef ROS_BUILD_SHARED_LIBS  // ros is being built around shared libraries
+  #ifdef moveit_warehouse_EXPORTS  // we are building a shared lib/dll
+    #define MOVEIT_WAREHOUSE_DECL ROS_HELPER_EXPORT
+  #else  // we are using shared lib/dll
+    #define MOVEIT_WAREHOUSE_DECL ROS_HELPER_IMPORT
+  #endif
+#else  // ros is being built around static libraries
+  #define MOVEIT_WAREHOUSE_DECL
+#endif
+
 namespace moveit_warehouse
 {
 typedef warehouse_ros::MessageWithMetadata<moveit_msgs::PlanningScene>::ConstPtr PlanningSceneWithMetadata;
@@ -55,7 +67,7 @@ typedef warehouse_ros::MessageCollection<moveit_msgs::RobotTrajectory>::Ptr Robo
 
 MOVEIT_CLASS_FORWARD(PlanningSceneStorage);
 
-class PlanningSceneStorage : public MoveItMessageStorage
+class MOVEIT_WAREHOUSE_DECL PlanningSceneStorage : public MoveItMessageStorage
 {
 public:
   static const std::string DATABASE_NAME;

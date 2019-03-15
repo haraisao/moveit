@@ -41,6 +41,9 @@
 #include <boost/thread/shared_mutex.hpp>
 #include <boost/function.hpp>
 #include <memory>
+#ifdef WIN32
+#include <shared_mutex>
+#endif
 
 namespace occupancy_map_monitor
 {
@@ -83,9 +86,13 @@ public:
     tree_mutex_.unlock();
   }
 
+#ifdef WIN32
+  typedef std::shared_lock<std::shared_mutex> ReadLock;
+  typedef std::unique_lock<std::shared_mutex> WriteLock;
+#else
   typedef boost::shared_lock<boost::shared_mutex> ReadLock;
   typedef boost::unique_lock<boost::shared_mutex> WriteLock;
-
+#endif
   ReadLock reading()
   {
     return ReadLock(tree_mutex_);
@@ -109,7 +116,11 @@ public:
   }
 
 private:
+#ifdef WIN32
+  std::shared_mutex tree_mutex_;
+#else
   boost::shared_mutex tree_mutex_;
+#endif
   boost::function<void()> update_callback_;
 };
 

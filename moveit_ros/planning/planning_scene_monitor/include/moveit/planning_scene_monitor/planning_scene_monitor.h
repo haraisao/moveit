@@ -53,6 +53,18 @@
 #include <boost/thread/recursive_mutex.hpp>
 #include <memory>
 
+#include <ros/macros.h>
+
+#ifdef ROS_BUILD_SHARED_LIBS  // ros is being built around shared libraries
+  #ifdef moveit_planning_scene_monitor_EXPORTS  // we are building a shared lib/dll
+    #define PLANNING_SCENE_MONITOR_DECL ROS_HELPER_EXPORT
+  #else  // we are using shared lib/dll
+    #define PLANNING_SCENE_MONITOR_DECL ROS_HELPER_IMPORT
+  #endif
+#else  // ros is being built around static libraries
+  #define PLANNING_SCENE_MONITOR_DECL
+#endif
+
 namespace planning_scene_monitor
 {
 MOVEIT_CLASS_FORWARD(PlanningSceneMonitor);
@@ -60,7 +72,7 @@ MOVEIT_CLASS_FORWARD(PlanningSceneMonitor);
 /**
  * @brief PlanningSceneMonitor
  * Subscribes to the topic \e planning_scene */
-class PlanningSceneMonitor : private boost::noncopyable
+class PLANNING_SCENE_MONITOR_DECL PlanningSceneMonitor : private boost::noncopyable
 {
 public:
   enum SceneUpdateType

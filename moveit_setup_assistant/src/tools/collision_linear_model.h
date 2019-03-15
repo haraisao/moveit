@@ -43,11 +43,26 @@
 
 #ifndef Q_MOC_RUN
 #include <moveit/setup_assistant/tools/compute_default_collisions.h>
+
+#include <ros/macros.h>
+
+#ifdef ROS_BUILD_SHARED_LIBS  // ros is being built around shared libraries
+  //#if defined(moveit_setup_assistant_widgets_EXPORTS) || defined(moveit_setup_assistant_tools_EXPORTS)
+  #if defined(moveit_setup_assistant_tools_EXPORTS)
+    #define COLLISION_LINEAR_MODEL_DECL ROS_HELPER_EXPORT
+  #else  // we are using shared lib/dll
+    #define COLLISION_LINEAR_MODEL_DECL ROS_HELPER_IMPORT
+  #endif
+#else  // ros is being built around static libraries
+  #define COLLISION_LINEAR_MODEL_DECL
+#endif
+#else
+ #define COLLISION_LINEAR_MODEL_DECL
 #endif
 
 #include "collision_matrix_model.h"
 
-class CollisionLinearModel : public QAbstractProxyModel
+class COLLISION_LINEAR_MODEL_DECL CollisionLinearModel : public QAbstractProxyModel
 {
   Q_OBJECT
 
@@ -77,7 +92,7 @@ public:
 };
 
 /** proxy model to allow for sorting of CollisionLinearModel, considering sorting history */
-class SortFilterProxyModel : public QSortFilterProxyModel
+class COLLISION_LINEAR_MODEL_DECL SortFilterProxyModel : public QSortFilterProxyModel
 {
   Q_OBJECT
 

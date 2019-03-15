@@ -44,6 +44,18 @@
 
 #include <memory>
 
+#include <ros/macros.h>
+
+#ifdef ROS_BUILD_SHARED_LIBS  // ros is being built around shared libraries
+  #ifdef moveit_planning_pipeline_EXPORTS  // we are building a shared lib/dll
+    #define PLANNING_PIPELINE_DECL ROS_HELPER_EXPORT
+  #else  // we are using shared lib/dll
+    #define PLANNING_PIPELINE_DECL ROS_HELPER_IMPORT
+  #endif
+#else  // ros is being built around static libraries
+  #define PLANNING_PIPELINE_DECL
+#endif
+
 /** \brief Planning pipeline */
 namespace planning_pipeline
 {
@@ -53,7 +65,7 @@ namespace planning_pipeline
     planning plugin and the
     planning_request_adapter::PlanningRequestAdapter plugins, in the
     specified order. */
-class PlanningPipeline
+class PLANNING_PIPELINE_DECL PlanningPipeline
 {
 public:
   /** \brief When motion plans are computed and they are supposed to be automatically displayed, they are sent to this

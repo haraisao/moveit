@@ -5,7 +5,15 @@ set_target_properties(${MOVEIT_LIB_NAME} PROPERTIES VERSION "${${PROJECT_NAME}_V
 target_link_libraries(${MOVEIT_LIB_NAME} moveit_planning_scene_monitor moveit_robot_model_loader ${catkin_LIBRARIES} ${Boost_LIBRARIES})
 add_dependencies(${MOVEIT_LIB_NAME} ${moveit_ros_planning_EXPORTED_TARGETS}) # don't build until necessary msgs are finish
 
-install(TARGETS ${MOVEIT_LIB_NAME} LIBRARY DESTINATION ${CATKIN_GLOBAL_LIB_DESTINATION})
+if(WIN32)
+    install(TARGETS ${MOVEIT_LIB_NAME} 
+        RUNTIME DESTINATION ${CATKIN_GLOBAL_LIB_DESTINATION}
+        CONFIGURATIONS ${CMAKE_BUILD_TYPE}
+        ARCHIVE DESTINATION ${CATKIN_GLOBAL_LIB_DESTINATION}
+        LIBRARY DESTINATION ${CATKIN_GLOBAL_LIB_DESTINATION})
+else()
+    install(TARGETS ${MOVEIT_LIB_NAME} LIBRARY DESTINATION ${CATKIN_GLOBAL_LIB_DESTINATION})
+endif()
 install(DIRECTORY include/ DESTINATION ${CATKIN_GLOBAL_INCLUDE_DESTINATION})
 
 add_library(test_controller_manager_plugin test/test_moveit_controller_manager_plugin.cpp)

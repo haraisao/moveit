@@ -40,13 +40,25 @@
 #include <moveit/mesh_filter/sensor_model.h>
 #include <string>
 
+#include <ros/macros.h>
+
+#ifdef ROS_BUILD_SHARED_LIBS  // ros is being built around shared libraries
+  #ifdef moveit_mesh_filter_EXPORTS  // we are building a shared lib/dll
+    #define MESH_FILTER_DECL ROS_HELPER_EXPORT
+  #else  // we are using shared lib/dll
+    #define MESH_FILTER_DECL ROS_HELPER_IMPORT
+  #endif
+#else  // ros is being built around static libraries
+  #define MESH_FILTER_DECL
+#endif
+
 namespace mesh_filter
 {
 /**
  * \brief Model for Disparity based devices. E.g stereo camera systems or OpenNI compatible devices
  * \author Suat Gedikli <gedikli@willowgarage.com>
  */
-class StereoCameraModel : public SensorModel
+class MESH_FILTER_DECL StereoCameraModel : public SensorModel
 {
 public:
   /**

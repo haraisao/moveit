@@ -443,8 +443,11 @@ void planning_scene_monitor::CurrentStateMonitor::tfCallback()
       if (latest_common_time <= joint_time_[joint] && latest_common_time > ros::Time(0))
         continue;
       joint_time_[joint] = latest_common_time;
-
+#ifdef WIN32
+      double *new_values = new double[joint->getStateSpaceDimension()];
+#else
       double new_values[joint->getStateSpaceDimension()];
+#endif
       const robot_model::LinkModel* link = joint->getChildLinkModel();
       if (link->jointOriginTransformIsIdentity())
         joint->computeVariablePositions(tf2::transformToEigen(transf), new_values);
@@ -459,6 +462,9 @@ void planning_scene_monitor::CurrentStateMonitor::tfCallback()
 
       robot_state_.setJointPositions(joint, new_values);
       update = true;
+#ifdef WIN32
+      delete[] new_values;
+#endif
     }
   }
 

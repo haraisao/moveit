@@ -39,10 +39,24 @@
 
 #include <moveit/macros/class_forward.h>
 #include <moveit/robot_interaction/locked_robot_state.h>
-//#include <moveit/robot_interaction/robot_interaction.h>
+#ifdef WIN32
+#include <moveit/robot_interaction/robot_interaction.h>
+#endif
 #include <visualization_msgs/InteractiveMarkerFeedback.h>
 #include <interactive_markers/menu_handler.h>
 #include <tf2_ros/buffer.h>
+
+#include <ros/macros.h>
+
+#ifdef ROS_BUILD_SHARED_LIBS  // ros is being built around shared libraries
+  #ifdef moveit_robot_interaction_EXPORTS  // we are building a shared lib/dll
+    #define ROBOT_INTERACTION_DECL ROS_HELPER_EXPORT
+  #else  // we are using shared lib/dll
+    #define ROBOT_INTERACTION_DECL ROS_HELPER_IMPORT
+  #endif
+#else  // ros is being built around static libraries
+  #define ROBOT_INTERACTION_DECL
+#endif
 
 namespace robot_interaction
 {
@@ -73,7 +87,7 @@ typedef boost::function<void(InteractionHandler*, bool)> InteractionHandlerCallb
 /// that contains this InteractionHandler object.
 /// All InteractionHandler objects in the same RobotInteraction are controlling
 /// the same group.
-class InteractionHandler : public LockedRobotState
+class ROBOT_INTERACTION_DECL InteractionHandler : public LockedRobotState
 {
 public:
   // Use this constructor if you have an initial RobotState already.

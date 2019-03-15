@@ -58,7 +58,10 @@
 #include <boost/filesystem/operations.hpp>  // for reading folders/files
 // MoveIt
 #include <moveit/rdf_loader/rdf_loader.h>
-
+#ifdef WIN32
+#include <direct.h>
+#include <windows.h>
+#endif
 namespace moveit_setup_assistant
 {
 // Boost file system
@@ -84,7 +87,11 @@ StartScreenWidget::StartScreenWidget(QWidget* parent, const MoveItConfigDataPtr&
   right_image_ = new QImage();
   right_image_label_ = new QLabel(this);
   std::string image_path = "./resources/MoveIt_Setup_Assistant2.png";
+#ifdef WIN32
+  if (_chdir(config_data_->setup_assistant_path_.c_str()) != 0)
+#else
   if (chdir(config_data_->setup_assistant_path_.c_str()) != 0)
+#endif
   {
     ROS_ERROR("FAILED TO CHANGE PACKAGE TO moveit_setup_assistant");
   }
@@ -399,15 +406,27 @@ bool StartScreenWidget::loadExistingFiles()
   // Load kinematics yaml file if available --------------------------------------------------
   fs::path kinematics_yaml_path = config_data_->config_pkg_path_;
   kinematics_yaml_path /= "config/kinematics.yaml";
-
+#ifdef WIN32
+  if (!config_data_->inputKinematicsYAML(kinematics_yaml_path.make_preferred().string()))
+#else
   if (!config_data_->inputKinematicsYAML(kinematics_yaml_path.make_preferred().native()))
+#endif
   {
+#ifdef WIN32
+    QMessageBox::warning(this, "No Kinematic YAML File",
+                         QString("Failed to parse kinematics yaml file. This file is not critical but any previous "
+                                 "kinematic solver settings have been lost. To re-populate this file edit each "
+                                 "existing planning group and choose a solver, then save each change. \n\nFile error "
+                                 "at location ")
+                             .append(kinematics_yaml_path.make_preferred().string().c_str()));
+#else
     QMessageBox::warning(this, "No Kinematic YAML File",
                          QString("Failed to parse kinematics yaml file. This file is not critical but any previous "
                                  "kinematic solver settings have been lost. To re-populate this file edit each "
                                  "existing planning group and choose a solver, then save each change. \n\nFile error "
                                  "at location ")
                              .append(kinematics_yaml_path.make_preferred().native().c_str()));
+#endif
   }
 
   // Load 3d_sensors config file
@@ -416,12 +435,18 @@ bool StartScreenWidget::loadExistingFiles()
   // Load ros controllers yaml file if available-----------------------------------------------
   fs::path ros_controllers_yaml_path = config_data_->config_pkg_path_;
   ros_controllers_yaml_path /= "config/ros_controllers.yaml";
+#ifdef WIN32
+  config_data_->inputROSControllersYAML(ros_controllers_yaml_path.make_preferred().string().c_str());
+#else
   config_data_->inputROSControllersYAML(ros_controllers_yaml_path.make_preferred().native());
-
+#endif
   fs::path ompl_yaml_path = config_data_->config_pkg_path_;
   ompl_yaml_path /= "config/ompl_planning.yaml";
+#ifdef WIN32
+  config_data_->inputOMPLYAML(ompl_yaml_path.make_preferred().string().c_str());
+#else
   config_data_->inputOMPLYAML(ompl_yaml_path.make_preferred().native());
-
+#endif
   // DONE LOADING --------------------------------------------------------------------------
 
   // Call a function that enables navigation
@@ -561,7 +586,11 @@ bool StartScreenWidget::loadURDFFile(const std::string& urdf_file_path, const st
   while (!nh.ok() && steps < 4)
   {
     ROS_WARN("Waiting for node handle");
+#ifdef WIN32
+    Sleep(1000);
+#else
     sleep(1);
+#endif
     steps++;
     ros::spinOnce();
   }
@@ -610,7 +639,11 @@ bool StartScreenWidget::setSRDFFile(const std::string& srdf_string)
   while (!nh.ok() && steps < 4)
   {
     ROS_WARN("Waiting for node handle");
+#ifdef WIN32
+    Sleep(1000);
+#else
     sleep(1);
+#endif
     steps++;
     ros::spinOnce();
   }
@@ -645,8 +678,11 @@ bool StartScreenWidget::extractPackageNameFromPath()
 
   // Copy path into vector of parts
   for (fs::path::iterator it = urdf_directory.begin(); it != urdf_directory.end(); ++it)
+#ifdef WIN32
+    path_parts.push_back(it->string());
+#else
     path_parts.push_back(it->native());
-
+#endif
   bool package_found = false;
 
   // reduce the generated directoy path's folder count by 1 each loop
@@ -670,8 +706,11 @@ bool StartScreenWidget::extractPackageNameFromPath()
     // check if this directory has a package.xml
     package_path = sub_path;
     package_path /= "package.xml";
+#ifdef WIN32
+    ROS_DEBUG_STREAM("Checking for " << package_path.make_preferred().string());
+#else
     ROS_DEBUG_STREAM("Checking for " << package_path.make_preferred().native());
-
+#endif
     // Check if the files exist
     if (fs::is_regular_file(package_path) || fs::is_regular_file(sub_path / "manifest.xml"))
     {
@@ -711,7 +750,11 @@ bool StartScreenWidget::extractPackageNameFromPath()
 
     // Success
     config_data_->urdf_pkg_name_ = package_name;
+#ifdef WIN32
+    config_data_->urdf_pkg_relative_path_ = relative_path.make_preferred().string();
+#else
     config_data_->urdf_pkg_relative_path_ = relative_path.make_preferred().native();
+#endif
   }
 
   ROS_DEBUG_STREAM("URDF Package Name: " << config_data_->urdf_pkg_name_);
@@ -781,12 +824,21 @@ bool StartScreenWidget::load3DSensorsFile()
 
   if (!fs::is_regular_file(sensors_3d_yaml_path))
   {
+#ifdef WIN32
+    return config_data_->input3DSensorsYAML(default_sensors_3d_yaml_path.make_preferred().string().c_str());
+#else
     return config_data_->input3DSensorsYAML(default_sensors_3d_yaml_path.make_preferred().native());
+#endif
   }
   else
   {
+#ifdef WIN32
+    return config_data_->input3DSensorsYAML(default_sensors_3d_yaml_path.make_preferred().string().c_str(),
+                                            sensors_3d_yaml_path.make_preferred().string().c_str());
+#else
     return config_data_->input3DSensorsYAML(default_sensors_3d_yaml_path.make_preferred().native(),
                                             sensors_3d_yaml_path.make_preferred().native());
+#endif
   }
 }
 

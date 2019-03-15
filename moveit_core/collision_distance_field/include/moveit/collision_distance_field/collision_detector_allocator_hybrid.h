@@ -41,10 +41,22 @@
 #include <moveit/collision_distance_field/collision_robot_hybrid.h>
 #include <moveit/collision_distance_field/collision_world_hybrid.h>
 
+#include <ros/macros.h>
+
+#ifdef ROS_BUILD_SHARED_LIBS  // ros is being built around shared libraries
+  #ifdef moveit_collision_distance_field_EXPORTS  // we are building a shared lib/dll
+    #define COLLISION_DISTANCE_FIELD_DECL ROS_HELPER_EXPORT
+  #else  // we are using shared lib/dll
+    #define COLLISION_DISTANCE_FIELD_DECL ROS_HELPER_IMPORT
+  #endif
+#else  // ros is being built around static libraries
+  #define COLLISION_DISTANCE_FIELD_DECL
+#endif
+
 namespace collision_detection
 {
 /** \brief An allocator for Hybrid collision detectors */
-class CollisionDetectorAllocatorHybrid
+class COLLISION_DISTANCE_FIELD_DECL CollisionDetectorAllocatorHybrid
     : public CollisionDetectorAllocatorTemplate<CollisionWorldHybrid, CollisionRobotHybrid,
                                                 CollisionDetectorAllocatorHybrid>
 {

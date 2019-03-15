@@ -1706,7 +1706,11 @@ std::string MoveItConfigData::appendPaths(const std::string& path1, const std::s
 {
   fs::path result = path1;
   result /= path2;
+#ifdef WIN32
+  return result.make_preferred().string();
+#else  
   return result.make_preferred().native();
+#endif
 }
 
 srdf::Model::Group* MoveItConfigData::findGroupByName(const std::string& name)

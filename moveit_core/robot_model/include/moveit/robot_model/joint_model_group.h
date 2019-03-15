@@ -45,6 +45,10 @@
 #include <boost/function.hpp>
 #include <set>
 
+#ifdef WIN32
+#undef near
+#endif
+
 namespace moveit
 {
 namespace core

@@ -89,8 +89,11 @@ int main(int argc, char** argv)
         pub_scene.publish(ps_msg);
       else
         pub_scene.publish(ps_msg.world);
-
+#ifdef WIN32
+      Sleep(1000);
+#else
       sleep(1);
+#endif
     }
   }
   else

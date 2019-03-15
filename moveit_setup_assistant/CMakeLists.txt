@@ -40,8 +40,15 @@ set(CMAKE_AUTOMOC ON)
 add_definitions(-DQT_NO_KEYWORDS)
 
 # Support new yaml-cpp API.
+if(NOT WIN32)
 find_package(PkgConfig)
 pkg_check_modules(YAMLCPP REQUIRED yaml-cpp>=0.5)
+else()
+  find_package(yaml-cpp REQUIRED)
+  set(YAMLCPP_INCLUDE_DIRS  ${YAML_CPP_INCLUDE_DIR})
+  set(YAMLCPP_LIBRARIES ${YAML_CPP_LIBRARIES}
+endif()
+
 include_directories(${YAMLCPP_INCLUDE_DIRS})
 
 catkin_package(

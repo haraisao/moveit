@@ -183,7 +183,11 @@ bool ConfigurationFilesWidget::loadGenFiles()
   fs::path template_package_path = config_data_->setup_assistant_path_;
   template_package_path /= "templates";
   template_package_path /= "moveit_config_pkg_template";
+#ifdef WIN32
+  config_data_->template_package_path_ = template_package_path.make_preferred().string().c_str();
+#else
   config_data_->template_package_path_ = template_package_path.make_preferred().native();
+#endif
 
   if (!fs::is_directory(config_data_->template_package_path_))
   {
@@ -1007,9 +1011,11 @@ const std::string ConfigurationFilesWidget::getPackageName(std::string package_p
   // Get the last directory name
   std::string package_name;
   fs::path fs_package_path = package_path;
-
+#ifdef WIN32
+  package_name = fs_package_path.filename().string().c_str();
+#else
   package_name = fs_package_path.filename().c_str();
-
+#endif
   // check for empty
   if (package_name.empty())
     package_name = "unknown";

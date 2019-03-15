@@ -17,6 +17,14 @@ target_link_libraries(${MOVEIT_LIB_NAME} ${catkin_LIBRARIES} ${Boost_LIBRARIES})
 add_executable(moveit_list_request_adapter_plugins src/list.cpp)
 target_link_libraries(moveit_list_request_adapter_plugins ${catkin_LIBRARIES} ${Boost_LIBRARIES})
 
-install(TARGETS ${MOVEIT_LIB_NAME} moveit_list_request_adapter_plugins
-  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+if(WIN32)
+  install(TARGETS ${MOVEIT_LIB_NAME} moveit_list_request_adapter_plugins
+    LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+    RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+    CONFIGURATIONS ${CMAKE_BUILD_TYPE}
+    )
+else()
+  install(TARGETS ${MOVEIT_LIB_NAME} moveit_list_request_adapter_plugins
+    LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+    RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+endif()

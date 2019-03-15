@@ -80,6 +80,7 @@ include_directories(lazy_free_space_updater/include
                     semantic_world/include
                     ${perception_GL_INCLUDE_DIRS}
                     ${Boost_INCLUDE_DIRS}
+                    ${SYSTEM_GL_INCLUDE_DIRS}
                     ${catkin_INCLUDE_DIRS}
                     )
 include_directories(SYSTEM

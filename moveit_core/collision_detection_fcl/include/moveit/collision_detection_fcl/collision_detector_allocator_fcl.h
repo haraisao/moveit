@@ -41,10 +41,22 @@
 #include <moveit/collision_detection_fcl/collision_robot_fcl.h>
 #include <moveit/collision_detection_fcl/collision_world_fcl.h>
 
+#include <ros/macros.h>
+
+#ifdef ROS_BUILD_SHARED_LIBS  // ros is being built around shared libraries
+  #ifdef moveit_collision_detection_fcl_EXPORTS  // we are building a shared lib/dll
+    #define COLLISION_DETECTION_DECL ROS_HELPER_EXPORT
+  #else  // we are using shared lib/dll
+    #define COLLISION_DETECTION_DECL ROS_HELPER_IMPORT
+  #endif
+#else  // ros is being built around static libraries
+  #define COLLISION_DETECTION_DECL
+#endif
+
 namespace collision_detection
 {
 /** \brief An allocator for FCL collision detectors */
-class CollisionDetectorAllocatorFCL
+class COLLISION_DETECTION_DECL CollisionDetectorAllocatorFCL
     : public CollisionDetectorAllocatorTemplate<CollisionWorldFCL, CollisionRobotFCL, CollisionDetectorAllocatorFCL>
 {
 public:

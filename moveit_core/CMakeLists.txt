@@ -4,9 +4,14 @@ project(moveit_core)
 add_compile_options(-std=c++14)
 
 # Warnings
+if(WIN32)
+add_compile_options(-Wall -W0 -w)
+else()
 add_compile_options(-Wall -Wextra
   -Wwrite-strings -Wunreachable-code -Wpointer-arith -Wredundant-decls -Wcast-qual
   -Wno-unused-parameter -Wno-unused-function)
+endif()
+
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
   # This too often has false-positives
   add_compile_options(-Wno-maybe-uninitialized)
@@ -20,14 +25,23 @@ if(NOT CMAKE_CONFIGURATION_TYPES AND NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release)
 endif()
 
-find_package(Boost REQUIRED system filesystem date_time thread iostreams)
+find_package(Boost REQUIRED system filesystem date_time thread iostreams zlib)
 find_package(Eigen3 REQUIRED)
 
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(LIBFCL_PC REQUIRED fcl)
+if(NOT WIN32)
+  find_package(PkgConfig REQUIRED)
+  pkg_check_modules(LIBFCL_PC REQUIRED fcl)
 # find *absolute* paths to LIBFCL_INCLUDE_DIRS and LIBFCL_LIBRARIES
-find_path(LIBFCL_INCLUDE_DIRS fcl/config.h HINTS ${LIBFCL_PC_INCLUDE_DIR} ${LIBFCL_PC_INCLUDE_DIRS})
-find_library(LIBFCL_LIBRARIES fcl HINTS ${LIBFCL_PC_LIBRARY_DIRS})
+  find_path(LIBFCL_INCLUDE_DIRS fcl/config.h HINTS ${LIBFCL_PC_INCLUDE_DIR} ${LIBFCL_PC_INCLUDE_DIRS})
+  find_library(LIBFCL_LIBRARIES fcl HINTS ${LIBFCL_PC_LIBRARY_DIRS})
+else()
+  find_package(fcl REQUIRED)
+  set(LIBFCL_LIBRARIES "ccd")
+  set(LIBFCL_LIBRARY_DIRS "/opt/ros/melodic/lib")
+  find_library(LIBFCL_LIBRARIES_FULL NAMES fcl PATHS ${LIBFCL_LIBRARY_DIRS})
+  find_library(CCD_LIBRARIES NAMES ccd PATHS ${LIBFCL_LIBRARY_DIRS})
+  set(LIBFCL_LIBRARIES "${LIBFCL_LIBRARIES_FULL};${CCD_LIBRARIES}")
+endif()
 
 find_package(octomap REQUIRED)
 find_package(urdfdom REQUIRED)

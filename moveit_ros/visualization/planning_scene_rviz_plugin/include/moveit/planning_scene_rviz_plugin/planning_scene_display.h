@@ -44,6 +44,22 @@
 #include <moveit/planning_scene_monitor/planning_scene_monitor.h>
 #include <moveit/background_processing/background_processing.h>
 #include <ros/ros.h>
+
+#include <ros/macros.h>
+
+#ifdef ROS_BUILD_SHARED_LIBS  // ros is being built around shared libraries
+ // #if defined(moveit_motion_planning_rviz_plugin_core_EXPORTS)
+  #if defined(moveit_planning_scene_rviz_plugin_core_EXPORTS)
+    #define MOTION_PLANNING_RVIZ_PLUGIN_CORE_DECL ROS_HELPER_EXPORT
+  #else  // we are using shared lib/dll
+    #define MOTION_PLANNING_RVIZ_PLUGIN_CORE_DECL ROS_HELPER_IMPORT
+  #endif
+#else  // ros is being built around static libraries
+  #define MOTION_PLANNING_RVIZ_PLUGIN_CORE_DECL
+#endif
+
+#else
+ #define MOTION_PLANNING_RVIZ_PLUGIN_CORE_DECL
 #endif
 
 namespace Ogre
@@ -65,7 +81,7 @@ class EnumProperty;
 
 namespace moveit_rviz_plugin
 {
-class PlanningSceneDisplay : public rviz::Display
+class MOTION_PLANNING_RVIZ_PLUGIN_CORE_DECL PlanningSceneDisplay : public rviz::Display
 {
   Q_OBJECT
 

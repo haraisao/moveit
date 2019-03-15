@@ -175,7 +175,11 @@ bool rdf_loader::RDFLoader::loadXacroFileToString(std::string& buffer, const std
     cmd += *it + " ";
   cmd += path;
 
+#ifdef WIN32
+  FILE* pipe = _popen(cmd.c_str(), "r");
+#else
   FILE* pipe = popen(cmd.c_str(), "r");
+#endif
   if (!pipe)
   {
     ROS_ERROR_NAMED("rdf_loader", "Unable to load path");
@@ -188,8 +192,11 @@ bool rdf_loader::RDFLoader::loadXacroFileToString(std::string& buffer, const std
     if (fgets(pipe_buffer, 128, pipe) != nullptr)
       buffer += pipe_buffer;
   }
+#ifdef WIN32
+  _pclose(pipe);
+#else
   pclose(pipe);
-
+#endif
   return true;
 }
 
