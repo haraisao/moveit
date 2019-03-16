@@ -1199,7 +1199,7 @@ bool RobotState::getJacobian(const JointModelGroup* group, const LinkModel* link
     {
 #ifdef WIN32
       if (! group->hasJointModel(pjm->getName()))
-#else      
+#else
       if (not group->hasJointModel(pjm->getName()))
 #endif
       {

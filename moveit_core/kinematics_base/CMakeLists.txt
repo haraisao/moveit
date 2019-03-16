@@ -5,7 +5,7 @@ set_target_properties(${MOVEIT_LIB_NAME} PROPERTIES VERSION "${${PROJECT_NAME}_V
 # Avoid warnings about deprecated members of KinematicsBase when building KinematicsBase itself.
 # TODO: remove when deperecated variables (tip_frame_, search_discretization_) are finally removed.
 if(NOT WIN32)
-        target_compile_options(${MOVEIT_LIB_NAME} PRIVATE -Wno-deprecated-declarations)
+	target_compile_options(${MOVEIT_LIB_NAME} PRIVATE -Wno-deprecated-declarations)
 endif()
 
 # This line is needed to ensure that messages are done being built before this is built
