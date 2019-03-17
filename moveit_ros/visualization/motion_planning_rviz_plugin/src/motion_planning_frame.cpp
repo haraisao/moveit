@@ -308,22 +308,23 @@ void MotionPlanningFrame::changePlanningGroupHelper()
 {
   if (!planning_display_->getPlanningSceneMonitor())
     return;
-
   planning_display_->addMainLoopJob(boost::bind(&MotionPlanningFrame::fillStateSelectionOptions, this));
   planning_display_->addMainLoopJob(
       boost::bind(&MotionPlanningFrame::populateConstraintsList, this, std::vector<std::string>()));
-
   const robot_model::RobotModelConstPtr& robot_model = planning_display_->getRobotModel();
   std::string group = planning_display_->getCurrentPlanningGroup();
+
   planning_display_->addMainLoopJob(
       boost::bind(&MotionPlanningParamWidget::setGroupName, ui_->planner_param_treeview, group));
   planning_display_->addMainLoopJob(
       [=]() { ui_->planning_group_combo_box->setCurrentText(QString::fromStdString(group)); });
 
+ 
   if (!group.empty() && robot_model)
   {
     if (move_group_ && move_group_->getName() == group)
       return;
+    
     ROS_INFO("Constructing new MoveGroup connection for group '%s' in namespace '%s'", group.c_str(),
              planning_display_->getMoveGroupNS().c_str());
     moveit::planning_interface::MoveGroupInterface::Options opt(group);
@@ -359,7 +360,6 @@ void MotionPlanningFrame::changePlanningGroupHelper()
         planning_display_->addMainLoopJob(boost::bind(&MotionPlanningFrame::populatePlannersList, this, desc));
       planning_display_->addBackgroundJob(boost::bind(&MotionPlanningFrame::populateConstraintsList, this),
                                           "populateConstraintsList");
-
       if (first_time_)
       {
         first_time_ = false;
@@ -375,7 +375,7 @@ void MotionPlanningFrame::changePlanningGroupHelper()
           planning_display_->addMainLoopJob(
               boost::bind(&MotionPlanningFrame::allowExternalProgramCommunication, this, true));
       }
-    }
+	}
   }
 }
 
@@ -406,10 +406,11 @@ void MotionPlanningFrame::importResource(const std::string& path)
 
       if (planning_display_->getPlanningSceneRO()->getCurrentState().hasAttachedBody(name))
       {
-        QMessageBox::warning(this, QString("Duplicate names"), QString("An attached object named '")
-                                                                   .append(name.c_str())
-                                                                   .append("' already exists. Please rename the "
-                                                                           "attached object before importing."));
+        QMessageBox::warning(this, QString("Duplicate names"),
+                             QString("An attached object named '")
+                                 .append(name.c_str())
+                                 .append("' already exists. Please rename the "
+                                         "attached object before importing."));
         return;
       }
 
@@ -442,8 +443,9 @@ void MotionPlanningFrame::importResource(const std::string& path)
             bool ok = false;
             QString text = QInputDialog::getText(
                 this, tr("Choose a new name"), tr("Import the new object under the name:"), QLineEdit::Normal,
-                QString::fromStdString(name + "-" + boost::lexical_cast<std::string>(
-                                                        planning_display_->getPlanningSceneRO()->getWorld()->size())),
+                QString::fromStdString(
+                    name + "-" +
+                    boost::lexical_cast<std::string>(planning_display_->getPlanningSceneRO()->getWorld()->size())),
                 &ok);
             if (ok)
             {

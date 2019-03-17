@@ -40,7 +40,7 @@ if(WIN32)
     LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION})
 else()
   install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION})
-endif'()
+endif()
 
 install(FILES moveit_simple_controller_manager_plugin_description.xml
         DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}

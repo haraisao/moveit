@@ -41,12 +41,12 @@ add_definitions(-DQT_NO_KEYWORDS)
 
 # Support new yaml-cpp API.
 if(NOT WIN32)
-find_package(PkgConfig)
-pkg_check_modules(YAMLCPP REQUIRED yaml-cpp>=0.5)
+  find_package(PkgConfig)
+  pkg_check_modules(YAMLCPP REQUIRED yaml-cpp>=0.5)
 else()
   find_package(yaml-cpp REQUIRED)
-  set(YAMLCPP_INCLUDE_DIRS  ${YAML_CPP_INCLUDE_DIR})
-  set(YAMLCPP_LIBRARIES ${YAML_CPP_LIBRARIES}
+  set(YAMLCPP_INCLUDE_DIRS ${YAML_CPP_INCLUDE_DIR})
+  set(YAMLCPP_LIBRARIES ${YAML_CPP_LIBRARIES})
 endif()
 
 include_directories(${YAMLCPP_INCLUDE_DIRS})
@@ -133,6 +133,8 @@ target_link_libraries(${PROJECT_NAME}_widgets
   ${Boost_LIBRARIES}
 )
 
+link_directories("c:/local/log4cxx/lib")
+
 # executables
 add_executable(${PROJECT_NAME} src/setup_assistant_main.cpp)
 target_link_libraries(${PROJECT_NAME}
@@ -149,6 +151,7 @@ set_target_properties(${PROJECT_NAME}_updater
 install(TARGETS ${PROJECT_NAME} ${PROJECT_NAME}_widgets ${PROJECT_NAME}_tools ${PROJECT_NAME}_updater
   LIBRARY DESTINATION ${CATKIN_GLOBAL_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+
 install(DIRECTORY include/ DESTINATION ${CATKIN_GLOBAL_INCLUDE_DESTINATION})
 
 install(DIRECTORY launch DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
