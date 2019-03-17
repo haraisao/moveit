@@ -626,11 +626,11 @@ void ChompOptimizer::calculateCollisionIncrements()
   // This is faster and guaranteed to converge, but it may take more iterations in the worst case.
   if (parameters_->use_stochastic_descent_)
   {
-  #ifdef WIN32
-    startPoint = (int)(((double)rand() / (double)RAND_MAX) * (free_vars_end_ - free_vars_start_) + free_vars_start_);
+#ifdef WIN32
+    start_point = (int)(((double)rand() / (double)RAND_MAX) * (free_vars_end_ - free_vars_start_) + free_vars_start_);
 #else
     start_point = (int)(((double)random() / (double)RAND_MAX) * (free_vars_end_ - free_vars_start_) + free_vars_start_);
- #endif
+#endif
     if (start_point < free_vars_start_)
       start_point = free_vars_start_;
     if (start_point > free_vars_end_)
