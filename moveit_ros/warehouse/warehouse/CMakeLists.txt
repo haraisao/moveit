@@ -33,14 +33,19 @@ if(WIN32)
   install(
     TARGETS
       ${MOVEIT_LIB_NAME}
+    ARCHIVE DESTINATION ${CATKIN_GLOBAL_LIB_DESTINATION}
+    LIBRARY DESTINATION ${CATKIN_GLOBAL_LIB_DESTINATION}
+    RUNTIME DESTINATION ${CATKIN_GLOBAL_LIB_DESTINATION}
+    CONFIGURATIONS ${CMAKE_BUILD_TYPE}
+  )
+  install(
+    TARGETS
       moveit_save_to_warehouse
       moveit_warehouse_broadcast
       moveit_warehouse_import_from_text
       moveit_warehouse_save_as_text
       moveit_init_demo_warehouse
       moveit_warehouse_services
-    ARCHIVE DESTINATION ${CATKIN_GLOBAL_LIB_DESTINATION}
-    LIBRARY DESTINATION ${CATKIN_GLOBAL_LIB_DESTINATION}
     RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
     CONFIGURATIONS ${CMAKE_BUILD_TYPE}
   )

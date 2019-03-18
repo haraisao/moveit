@@ -41,9 +41,14 @@ set_target_properties(moveit_ompl_planner_plugin PROPERTIES VERSION "${${PROJECT
 target_link_libraries(moveit_ompl_planner_plugin ${MOVEIT_LIB_NAME} ${catkin_LIBRARIES} ${Boost_LIBRARIES})
 
 if(WIN32)
-  install(TARGETS ${MOVEIT_LIB_NAME} moveit_ompl_planner moveit_ompl_planner_plugin moveit_generate_state_database
+  install(TARGETS ${MOVEIT_LIB_NAME} moveit_ompl_planner_plugin 
     LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
     RUNTIME DESTINATION ${CATKIN_GLOBAL_LIB_DESTINATION}
+    CONFIGURATIONS ${CMAKE_BUILD_TYPE}
+    )
+  install(TARGETS moveit_ompl_planner moveit_generate_state_database
+    LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+    RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
     CONFIGURATIONS ${CMAKE_BUILD_TYPE}
     )
 else()

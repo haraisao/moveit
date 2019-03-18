@@ -67,10 +67,16 @@ target_link_libraries(moveit_move_group_default_capabilities moveit_move_group_c
 target_link_libraries(list_move_group_capabilities ${catkin_LIBRARIES} ${Boost_LIBRARIES})
 
 if(WIN32)
-  install(TARGETS move_group list_move_group_capabilities moveit_move_group_capabilities_base moveit_move_group_default_capabilities
+  install(TARGETS moveit_move_group_capabilities_base moveit_move_group_default_capabilities
     ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
     LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
     RUNTIME DESTINATION ${CATKIN_GLOBAL_LIB_DESTINATION}
+    CONFIGURATIONS ${CMAKE_BUILD_TYPE}
+    )
+  install(TARGETS move_group list_move_group_capabilities
+    ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+    LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+    RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
     CONFIGURATIONS ${CMAKE_BUILD_TYPE}
     )
 else()  
