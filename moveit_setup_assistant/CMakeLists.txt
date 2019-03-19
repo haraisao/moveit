@@ -133,13 +133,14 @@ target_link_libraries(${PROJECT_NAME}_widgets
   ${Boost_LIBRARIES}
 )
 
-link_directories("c:/local/log4cxx/lib")
+find_package(log4cxx QUIET)
+#link_directories("c:/local/log4cxx/lib")
 
 # executables
 add_executable(${PROJECT_NAME} src/setup_assistant_main.cpp)
 target_link_libraries(${PROJECT_NAME}
   ${PROJECT_NAME}_widgets ${PROJECT_NAME}_tools
-  ${QT_LIBRARIES} ${catkin_LIBRARIES} ${Boost_LIBRARIES} log4cxx)
+  ${QT_LIBRARIES} ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${LOG4CXX_LIBRARIES} )
 
 add_executable(${PROJECT_NAME}_updater src/collisions_updater.cpp )
 target_link_libraries(${PROJECT_NAME}_updater
