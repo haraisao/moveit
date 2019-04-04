@@ -8,8 +8,8 @@ if(NOT CMAKE_CONFIGURATION_TYPES AND NOT CMAKE_BUILD_TYPE)
 endif()
 
 find_package(Boost REQUIRED)
-find_package(Eigen3 REQUIRED)
 find_package(orocos_kdl REQUIRED)
+
 find_package(catkin REQUIRED COMPONENTS
   moveit_core
   moveit_ros_planning
@@ -18,6 +18,8 @@ find_package(catkin REQUIRED COMPONENTS
   tf2
   tf2_kdl
 )
+
+find_package(Eigen3 REQUIRED)
 
 set(THIS_PACKAGE_INCLUDE_DIRS
     kdl_kinematics_plugin/include

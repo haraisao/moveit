@@ -25,6 +25,8 @@ if(NOT CMAKE_CONFIGURATION_TYPES AND NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release)
 endif()
 
+find_package(catkin REQUIRED)
+
 find_package(Boost REQUIRED system filesystem date_time thread iostreams zlib)
 find_package(Eigen3 REQUIRED)
 
@@ -37,7 +39,7 @@ if(NOT WIN32)
 else()
   find_package(fcl REQUIRED)
   set(LIBFCL_LIBRARIES "ccd")
-  set(LIBFCL_LIBRARY_DIRS "/opt/ros/melodic/lib")
+  set(LIBFCL_LIBRARY_DIRS $ENV{ROS_HOME_CMAKE}/${CATKIN_GLOBAL_LIB_DESTINATION})
   find_library(LIBFCL_LIBRARIES_FULL NAMES fcl PATHS ${LIBFCL_LIBRARY_DIRS})
   find_library(CCD_LIBRARIES NAMES ccd PATHS ${LIBFCL_LIBRARY_DIRS})
   set(LIBFCL_LIBRARIES "${LIBFCL_LIBRARIES_FULL};${CCD_LIBRARIES}")

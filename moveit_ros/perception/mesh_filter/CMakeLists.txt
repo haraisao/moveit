@@ -9,7 +9,7 @@ add_library(${MOVEIT_LIB_NAME}
   )
 set_target_properties(${MOVEIT_LIB_NAME} PROPERTIES VERSION "${${PROJECT_NAME}_VERSION}")
 
-target_link_libraries(${MOVEIT_LIB_NAME} ${catkin_LIBRARIES} ${gl_LIBS} ${GLUT_glut_LIBRARY} ${GLEW_LIBRARY})
+target_link_libraries(${MOVEIT_LIB_NAME} ${catkin_LIBRARIES} ${gl_LIBS} ${GLUT_LIBRARY} ${GLEW_LIBRARY})
 
 if (CATKIN_ENABLE_TESTING)
   #catkin_lint: ignore_once env_var

@@ -11,19 +11,6 @@ endif()
 
 find_package(Boost REQUIRED thread)
 
-if(WITH_OPENGL)
-  find_package(OpenGL REQUIRED)
-  find_package(GLEW REQUIRED)
-  find_package(GLUT REQUIRED)
-  set(gl_LIBS ${gl_LIBS} ${OPENGL_LIBRARIES})
-  set(perception_GL_INCLUDE_DIRS "mesh_filter/include" "depth_image_octomap_updater/include")
-  set(SYSTEM_GL_INCLUDE_DIRS ${GLEW_INCLUDE_DIR} ${GLUT_INCLUDE_DIR})
-endif(WITH_OPENGL)
-
-if(APPLE)
-  find_package(X11 REQUIRED)
-endif(APPLE)
-
 find_package(catkin REQUIRED COMPONENTS
   cv_bridge
   moveit_core
@@ -41,6 +28,25 @@ find_package(catkin REQUIRED COMPONENTS
   sensor_msgs
   moveit_msgs
 )
+
+if(WITH_OPENGL)
+  find_package(OpenGL REQUIRED)
+  if(WIN32)
+    find_package(GLEW2 REQUIRED)
+    find_package(freeglut REQUIRED)
+  else()
+    find_package(GLEW REQUIRED)
+    find_package(GLUT REQUIRED)
+  endif()
+
+  set(gl_LIBS ${gl_LIBS} ${OPENGL_LIBRARIES})
+  set(perception_GL_INCLUDE_DIRS "mesh_filter/include" "depth_image_octomap_updater/include")
+  set(SYSTEM_GL_INCLUDE_DIRS ${GLEW_INCLUDE_DIR} ${GLUT_INCLUDE_DIR})
+endif(WITH_OPENGL)
+
+if(APPLE)
+  find_package(X11 REQUIRED)
+endif(APPLE)
 
 find_package(Eigen3 REQUIRED)
 find_package(OpenMP REQUIRED)
