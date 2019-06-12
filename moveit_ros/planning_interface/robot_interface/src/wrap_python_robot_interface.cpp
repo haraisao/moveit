@@ -233,6 +233,13 @@ public:
     return py_bindings_tools::serializeMsg(msg);
   }
 
+  bp::object  getCurrentState_py3()
+  {
+    std::string res =  getCurrentState();
+    const char *val = res.c_str();
+    return bp::object(bp::handle<>( PyBytes_FromStringAndSize( res.c_str(), res.size() )));
+  }
+
   bp::tuple getEndEffectorParentGroup(const std::string& group)
   {
     // name of the group that is parent to this end-effector group;
@@ -385,7 +392,8 @@ static void wrap_robot_interface()
   robot_class.def("get_joint_limits", &RobotInterfacePython::getJointLimits);
   robot_class.def("get_link_pose", &RobotInterfacePython::getLinkPose);
   robot_class.def("get_planning_frame", &RobotInterfacePython::getPlanningFrame);
-  robot_class.def("get_current_state", &RobotInterfacePython::getCurrentState);
+  robot_class.def("get_current_state_py2", &RobotInterfacePython::getCurrentState);
+  robot_class.def("get_current_state", &RobotInterfacePython::getCurrentState_py3);
   robot_class.def("get_current_variable_values", &RobotInterfacePython::getCurrentVariableValues);
   robot_class.def("get_current_joint_values", &RobotInterfacePython::getCurrentJointValues);
   robot_class.def("get_joint_values", &RobotInterfacePython::getJointValues);
