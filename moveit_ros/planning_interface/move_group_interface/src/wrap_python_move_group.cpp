@@ -490,7 +490,12 @@ public:
     moveit_msgs::RobotTrajectory trajectory;
     double fraction =
         computeCartesianPath(poses, eef_step, jump_threshold, trajectory, path_constraints, avoid_collisions);
-    return bp::make_tuple(py_bindings_tools::serializeMsg(trajectory), fraction);
+    /****** */
+    std::string res = py_bindings_tools::serializeMsg(trajectory);
+    const char *val = res.c_str();
+    bp::object trj = bp::object(bp::handle<>( PyBytes_FromStringAndSize( res.c_str(), res.size() )));
+    /****** */
+    return bp::make_tuple(trj, fraction);
   }
 
   int pickGrasp(const std::string& object, const std::string& grasp_str, bool plan_only = false)
