@@ -138,6 +138,15 @@ public:
     return py_bindings_tools::serializeMsg(msg);
   }
 
+/*
+ */
+  bp::object getJointValueTargetByte()
+  {
+    std::string res =  getJointValueTarget();
+    const char *val = res.c_str();
+    return bp::object(bp::handle<>( PyBytes_FromStringAndSize( res.c_str(), res.size() )));
+  }
+
   void rememberJointValuesFromPythonList(const std::string& string, bp::list& values)
   {
     rememberJointValues(string, py_bindings_tools::doubleFromList(values));
@@ -153,6 +162,15 @@ public:
     moveit_msgs::PlannerInterfaceDescription msg;
     getInterfaceDescription(msg);
     return py_bindings_tools::serializeMsg(msg);
+  }
+
+ /*
+  */
+  bp::object getInterfaceDescriptionPythonByte()
+  {
+    std::string res =  getInterfaceDescriptionPython();
+    const char *val = res.c_str();
+    return bp::object(bp::handle<>( PyBytes_FromStringAndSize( res.c_str(), res.size() )));
   }
 
   bp::list getActiveJointsList() const
@@ -331,10 +349,18 @@ public:
     convertListToArrayOfPoses(poses, msg);
     return setPoseTargets(msg, end_effector_link);
   }
+
   std::string getPoseTargetPython(const std::string& end_effector_link)
   {
     geometry_msgs::PoseStamped pose = moveit::planning_interface::MoveGroupInterface::getPoseTarget(end_effector_link);
     return py_bindings_tools::serializeMsg(pose);
+  }
+
+  bp::object getPoseTargetPythonByte(const std::string& end_effector_link)
+  {
+    std::string res =  getPoseTargetPython(end_effector_link);
+    const char *val = res.c_str();
+    return bp::object(bp::handle<>( PyBytes_FromStringAndSize( res.c_str(), res.size() )));
   }
 
   bool setPoseTargetPython(bp::list& pose, const std::string& end_effector_link = "")
@@ -432,6 +458,15 @@ public:
     return py_bindings_tools::serializeMsg(plan.trajectory_);
   }
 
+  /*
+   */
+  bp::object getPlanPythonByte()
+  {
+    std::string res =  getPlanPython();
+    const char *val = res.c_str();
+    return bp::object(bp::handle<>( PyBytes_FromStringAndSize( res.c_str(), res.size() )));
+  }
+
   bp::tuple computeCartesianPathPython(const bp::list& waypoints, double eef_step, double jump_threshold,
                                        bool avoid_collisions)
   {
@@ -488,6 +523,15 @@ public:
     return constraints_str;
   }
 
+/*
+ */
+  bp::object getPathConstraintsPythonByte()
+  {
+    std::string res =  getPathConstraintsPython();
+    const char *val = res.c_str();
+    return bp::object(bp::handle<>( PyBytes_FromStringAndSize( res.c_str(), res.size() )));
+  }
+
   std::string retimeTrajectory(const std::string& ref_state_str, const std::string& traj_str,
                                double velocity_scaling_factor)
   {
@@ -520,7 +564,16 @@ public:
       return "";
     }
   }
+
+  bp::object retimeTrajectoryByte(const std::string& ref_state_str, const std::string& traj_str,
+                               double velocity_scaling_factor)
+  {
+    std::string res =  retimeTrajectory(ref_state_str, traj_str, velocity_scaling_factor);
+    const char *val = res.c_str();
+    return bp::object(bp::handle<>( PyBytes_FromStringAndSize( res.c_str(), res.size() )));
+  }
 };
+
 
 static void wrap_move_group_interface()
 {
@@ -543,8 +596,10 @@ static void wrap_move_group_interface()
 
   move_group_interface_class.def("get_name", &MoveGroupInterfaceWrapper::getNameCStr);
   move_group_interface_class.def("get_planning_frame", &MoveGroupInterfaceWrapper::getPlanningFrameCStr);
-  move_group_interface_class.def("get_interface_description",
+  move_group_interface_class.def("get_interface_description_py2",
                                  &MoveGroupInterfaceWrapper::getInterfaceDescriptionPython);
+  move_group_interface_class.def("get_interface_description",
+                                 &MoveGroupInterfaceWrapper::getInterfaceDescriptionPythonByte);
 
   move_group_interface_class.def("get_active_joints", &MoveGroupInterfaceWrapper::getActiveJointsList);
   move_group_interface_class.def("get_joints", &MoveGroupInterfaceWrapper::getJointsList);
@@ -633,7 +688,8 @@ static void wrap_move_group_interface()
   move_group_interface_class.def("set_path_constraints", set_path_constraints_1);
   move_group_interface_class.def("set_path_constraints_from_msg",
                                  &MoveGroupInterfaceWrapper::setPathConstraintsFromMsg);
-  move_group_interface_class.def("get_path_constraints", &MoveGroupInterfaceWrapper::getPathConstraintsPython);
+  move_group_interface_class.def("get_path_constraints_py2", &MoveGroupInterfaceWrapper::getPathConstraintsPython);
+  move_group_interface_class.def("get_path_constraints", &MoveGroupInterfaceWrapper::getPathConstraintsPythonByte);
   move_group_interface_class.def("clear_path_constraints", &MoveGroupInterfaceWrapper::clearPathConstraints);
   move_group_interface_class.def("get_known_constraints", &MoveGroupInterfaceWrapper::getKnownConstraintsList);
   move_group_interface_class.def("set_constraints_database", &MoveGroupInterfaceWrapper::setConstraintsDatabase);
@@ -646,14 +702,16 @@ static void wrap_move_group_interface()
                                  &MoveGroupInterfaceWrapper::setMaxAccelerationScalingFactor);
   move_group_interface_class.def("set_planner_id", &MoveGroupInterfaceWrapper::setPlannerId);
   move_group_interface_class.def("set_num_planning_attempts", &MoveGroupInterfaceWrapper::setNumPlanningAttempts);
-  move_group_interface_class.def("compute_plan", &MoveGroupInterfaceWrapper::getPlanPython);
+  move_group_interface_class.def("compute_plan_py2", &MoveGroupInterfaceWrapper::getPlanPython);
+  move_group_interface_class.def("compute_plan", &MoveGroupInterfaceWrapper::getPlanPythonByte);
   move_group_interface_class.def("compute_cartesian_path", &MoveGroupInterfaceWrapper::computeCartesianPathPython);
   move_group_interface_class.def("compute_cartesian_path",
                                  &MoveGroupInterfaceWrapper::computeCartesianPathConstrainedPython);
   move_group_interface_class.def("set_support_surface_name", &MoveGroupInterfaceWrapper::setSupportSurfaceName);
   move_group_interface_class.def("attach_object", &MoveGroupInterfaceWrapper::attachObjectPython);
   move_group_interface_class.def("detach_object", &MoveGroupInterfaceWrapper::detachObject);
-  move_group_interface_class.def("retime_trajectory", &MoveGroupInterfaceWrapper::retimeTrajectory);
+  move_group_interface_class.def("retime_trajectory_py2", &MoveGroupInterfaceWrapper::retimeTrajectory);
+  move_group_interface_class.def("retime_trajectory", &MoveGroupInterfaceWrapper::retimeTrajectoryByte);
   move_group_interface_class.def("get_named_targets", &MoveGroupInterfaceWrapper::getNamedTargetsPython);
   move_group_interface_class.def("get_named_target_values", &MoveGroupInterfaceWrapper::getNamedTargetValuesPython);
   move_group_interface_class.def("get_current_state_bounded", &MoveGroupInterfaceWrapper::getCurrentStateBoundedPython);

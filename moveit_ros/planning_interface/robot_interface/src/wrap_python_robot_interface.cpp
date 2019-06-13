@@ -233,7 +233,7 @@ public:
     return py_bindings_tools::serializeMsg(msg);
   }
 
-  bp::object  getCurrentState_py3()
+  bp::object  getCurrentStateByte()
   {
     std::string res =  getCurrentState();
     const char *val = res.c_str();
@@ -280,6 +280,13 @@ public:
     return py_bindings_tools::serializeMsg(msg);
   }
 
+  bp::object getRobotMarkersPythonDictListByte(bp::dict& values, bp::list& links)
+  {
+    std::string res =  getRobotMarkersPythonDictList(values, links);
+    const char *val = res.c_str();
+    return bp::object(bp::handle<>( PyBytes_FromStringAndSize( res.c_str(), res.size() )));
+  }
+
   std::string getRobotMarkersPythonDict(bp::dict& values)
   {
     bp::list links = py_bindings_tools::listFromString(robot_model_->getLinkModelNames());
@@ -299,6 +306,15 @@ public:
     return py_bindings_tools::serializeMsg(msg);
   }
 
+ /*
+ */
+  bp::object getRobotMarkersFromMsgByte(const std::string& state_str)
+  {
+    std::string res =  getRobotMarkersFromMsg(state_str);
+    const char *val = res.c_str();
+    return bp::object(bp::handle<>( PyBytes_FromStringAndSize( res.c_str(), res.size() )));
+  }
+
   std::string getRobotMarkers()
   {
     if (!ensureCurrentState())
@@ -310,6 +326,15 @@ public:
     return py_bindings_tools::serializeMsg(msg);
   }
 
+ /*
+  */
+  bp::object getRobotMarkersByte()
+  {
+    std::string res =  getRobotMarkers();
+    const char *val = res.c_str();
+    return bp::object(bp::handle<>( PyBytes_FromStringAndSize( res.c_str(), res.size() )));
+  }
+
   std::string getRobotMarkersPythonList(const bp::list& links)
   {
     if (!ensureCurrentState())
@@ -319,6 +344,14 @@ public:
     s->getRobotMarkers(msg, py_bindings_tools::stringFromList(links));
 
     return py_bindings_tools::serializeMsg(msg);
+  }
+  /*
+   */
+  bp::object getRobotMarkersPythonListByte(const bp::list& links)
+  {
+    std::string res =  getRobotMarkersPythonList(links);
+    const char *val = res.c_str();
+    return bp::object(bp::handle<>( PyBytes_FromStringAndSize( res.c_str(), res.size() )));
   }
 
   std::string getRobotMarkersGroup(const std::string& group)
@@ -334,6 +367,15 @@ public:
     }
 
     return py_bindings_tools::serializeMsg(msg);
+  }
+
+  /*
+   */
+  bp::object getRobotMarkersGroupByte(const std::string& group)
+  {
+    std::string res =  getRobotMarkersGroup(group);
+    const char *val = res.c_str();
+    return bp::object(bp::handle<>( PyBytes_FromStringAndSize( res.c_str(), res.size() )));
   }
 
   std::string getRobotMarkersGroupPythonDict(const std::string& group, bp::dict& values)
@@ -393,19 +435,24 @@ static void wrap_robot_interface()
   robot_class.def("get_link_pose", &RobotInterfacePython::getLinkPose);
   robot_class.def("get_planning_frame", &RobotInterfacePython::getPlanningFrame);
   robot_class.def("get_current_state_py2", &RobotInterfacePython::getCurrentState);
-  robot_class.def("get_current_state", &RobotInterfacePython::getCurrentState_py3);
+  robot_class.def("get_current_state", &RobotInterfacePython::getCurrentStateByte);
   robot_class.def("get_current_variable_values", &RobotInterfacePython::getCurrentVariableValues);
   robot_class.def("get_current_joint_values", &RobotInterfacePython::getCurrentJointValues);
   robot_class.def("get_joint_values", &RobotInterfacePython::getJointValues);
   robot_class.def("get_robot_root_link", &RobotInterfacePython::getRobotRootLink);
   robot_class.def("has_group", &RobotInterfacePython::hasGroup);
   robot_class.def("get_robot_name", &RobotInterfacePython::getRobotName);
-  robot_class.def("get_robot_markers", &RobotInterfacePython::getRobotMarkers);
-  robot_class.def("get_robot_markers", &RobotInterfacePython::getRobotMarkersPythonList);
-  robot_class.def("get_robot_markers", &RobotInterfacePython::getRobotMarkersFromMsg);
-  robot_class.def("get_robot_markers", &RobotInterfacePython::getRobotMarkersPythonDictList);
+  robot_class.def("get_robot_markers_py2", &RobotInterfacePython::getRobotMarkers);
+  robot_class.def("get_robot_markers", &RobotInterfacePython::getRobotMarkersByte);
+  robot_class.def("get_robot_markers_py2", &RobotInterfacePython::getRobotMarkersPythonList);
+  robot_class.def("get_robot_markers", &RobotInterfacePython::getRobotMarkersPythonListByte);
+  robot_class.def("get_robot_markers_py2", &RobotInterfacePython::getRobotMarkersFromMsg);
+  robot_class.def("get_robot_markers", &RobotInterfacePython::getRobotMarkersFromMsgByte);
+  robot_class.def("get_robot_markers_py2", &RobotInterfacePython::getRobotMarkersPythonDictList);
+  robot_class.def("get_robot_markers", &RobotInterfacePython::getRobotMarkersPythonDictListByte);
   robot_class.def("get_robot_markers", &RobotInterfacePython::getRobotMarkersPythonDict);
-  robot_class.def("get_group_markers", &RobotInterfacePython::getRobotMarkersGroup);
+  robot_class.def("get_group_markers_py2", &RobotInterfacePython::getRobotMarkersGroup);
+  robot_class.def("get_group_markers", &RobotInterfacePython::getRobotMarkersGroupByte);
   robot_class.def("get_group_markers", &RobotInterfacePython::getRobotMarkersGroupPythonDict);
   robot_class.def("get_parent_group", &RobotInterfacePython::getEndEffectorParentGroup);
 }
